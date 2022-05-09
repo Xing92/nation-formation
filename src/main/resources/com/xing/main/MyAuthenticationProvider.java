@@ -29,10 +29,9 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 		System.out.println("name:" + name);
 		System.out.println("pass:" + password);
 		System.out.println("all users:");
-		userRepository.findAll().forEach(u -> System.out.println("[" + u.getUserame() + ":" + u.getPassword() + "]"));
+		userRepository.findAll().forEach(u -> System.out.println("[" + u.getUsername() + ":" + u.getPassword() + "]"));
 
-		final String storedPassword = userRepository.findByUsername(name).stream().map(User::getPassword).findFirst()
-				.orElseThrow(() -> new BadCredentialsException("illegal id or passowrd"));
+		final String storedPassword = userRepository.findByUsername(name).getPassword();
 
 		if (Objects.equals(password, "") || !Objects.equals(password, storedPassword)) {
 			throw new BadCredentialsException("illegal id or passowrd");

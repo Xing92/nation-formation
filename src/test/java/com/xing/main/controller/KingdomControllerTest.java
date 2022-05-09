@@ -43,8 +43,8 @@ public class KingdomControllerTest extends ControllerTestBase {
 		List<User> users = restTemplate.getForObject(getUrl("/user/all"), List.class);
 		Log.info("Returned users:" + users);
 		assertThat(users).hasSize(1);
-		assertThat(users.get(0).getUserame()).isEqualTo(username);
-		assertThat(users.get(0).getUserame()).isEqualTo(username);
+		assertThat(users.get(0).getUsername()).isEqualTo(username);
+		assertThat(users.get(0).getUsername()).isEqualTo(username);
 		assertThat(users.get(0).getPassword()).isEqualTo(password);
 	}
 }

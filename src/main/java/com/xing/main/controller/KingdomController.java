@@ -18,7 +18,7 @@ import com.xing.main.repository.KingdomRepository;
 import com.xing.main.repository.UserRepository;
 
 @Controller
-@RequestMapping(path = "/kingdom")
+@RequestMapping(path = "/api/kingdom")
 public class KingdomController {
 	@Autowired
 	private KingdomRepository kingdomRepository;
@@ -28,7 +28,7 @@ public class KingdomController {
 	@PostMapping(path = "/add")
 	public @ResponseBody String addNewKingdom(@RequestParam String name, Authentication auth) {
 
-		User user = userRepository.findByUsername(auth.getName()).get(0);
+		User user = userRepository.findByUsername(auth.getName());
 		if (user.getKingdom() != null) {
 			return "This User already has a Kingdom";
 		}

@@ -17,6 +17,5 @@ public class NationFormationApplication {
 		SpringApplication.run(NationFormationApplication.class, args);
 		System.out.println("Xing:started");
 	}
-	
 
 }

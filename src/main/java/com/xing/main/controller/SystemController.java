@@ -19,7 +19,7 @@ import com.xing.main.repository.KingdomRepository;
 import com.xing.main.repository.YearRepository;
 
 @Controller
-@RequestMapping(path = "/system")
+@RequestMapping(path = "/api/system")
 public class SystemController {
 	@Autowired
 	private KingdomRepository kingdomRepository;

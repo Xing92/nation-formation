@@ -1,7 +1,5 @@
 package com.xing.main.repository;
 
-import java.util.List;
-
 import org.springframework.data.repository.CrudRepository;
 
 import com.xing.main.model.User;
@@ -10,5 +8,5 @@ import com.xing.main.model.User;
 // CRUD refers Create, Read, Update, Delete
 
 public interface UserRepository extends CrudRepository<User, Integer> {
-	List<User> findByUsername(String username);
+	User findByUsername(String username);
 }
