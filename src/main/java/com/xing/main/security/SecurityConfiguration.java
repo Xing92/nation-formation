@@ -59,8 +59,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .antMatchers(SWAGGER_WHITE_LIST).permitAll()
                 .antMatchers("/api/user/create").permitAll()
                 .antMatchers("/api/user/all").hasAuthority("USER")
+                .antMatchers("/**").hasAuthority("USER")
 //                .antMatchers("/api/employee/simple").hasRole("USER")
-                .antMatchers("/api/system/**").hasAuthority("ADMIN")
+//                .antMatchers("/api/system/**").hasAuthority("ADMIN") // TODO allow this line
                 
 //                .antMatchers("/api/employee/simple").hasRole("USER")
 //                .antMatchers("/login").permitAll()

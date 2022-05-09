@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Kingdom {
@@ -12,13 +13,11 @@ public class Kingdom {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
+	@OneToOne
+	private KingdomDetails kingdomDetails;
+
 	@Column(unique = true)
 	private String name;
-	private int population;
-	private int populationUnassigned;
-	private int miners;
-	private int gold;
-	private int currentTurn;
 	private int maxTurns;
 
 	public Integer getId() {
@@ -37,52 +36,20 @@ public class Kingdom {
 		this.name = name;
 	}
 
-	public void setPopulation(int population) {
-		this.population = population;
-	}
-
-	public void setMiners(int miners) {
-		this.miners = miners;
-	}
-
-	public void setGold(int gold) {
-		this.gold = gold;
-	}
-
-	public void setCurrentTurn(int currentTurn) {
-		this.currentTurn = currentTurn;
-	}
-
 	public void setMaxTurns(int maxTurns) {
 		this.maxTurns = maxTurns;
-	}
-
-	public int getPopulation() {
-		return population;
-	}
-
-	public int getMiners() {
-		return miners;
-	}
-
-	public int getGold() {
-		return gold;
-	}
-
-	public int getCurrentTurn() {
-		return currentTurn;
 	}
 
 	public int getMaxTurns() {
 		return maxTurns;
 	}
 
-	public int getPopulationUnassigned() {
-		return populationUnassigned;
+	public KingdomDetails getKingdomDetails() {
+		return kingdomDetails;
 	}
 
-	public void setPopulationUnassigned(int populationUnassigned) {
-		this.populationUnassigned = populationUnassigned;
+	public void setKingdomDetails(KingdomDetails kingdomDetails) {
+		this.kingdomDetails = kingdomDetails;
 	}
 
 }

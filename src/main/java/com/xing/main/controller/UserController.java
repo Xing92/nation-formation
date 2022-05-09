@@ -23,7 +23,7 @@ public class UserController {
 	private UserRepository userRepository;
 
 	@PostMapping(path = "/create")
-	public @ResponseBody String addNewUser(@RequestParam String username, @RequestParam String password) {
+	public @ResponseBody ResponseEntity<User> addNewUser(@RequestParam String username, @RequestParam String password) {
 
 		User user = new User();
 		user.setUsername(username);
@@ -32,7 +32,7 @@ public class UserController {
 		role.setRole("USER");
 		user.addRole(role);
 		user = userRepository.save(user);
-		return "User Created:" + user.getUsername();
+		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/all")
@@ -42,11 +42,8 @@ public class UserController {
 
 	@GetMapping(path = "/me")
 	public ResponseEntity<User> getMyUser() {
-		
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-		System.out.println("name:" + userName);
 		User user = userRepository.findByUsername(userName);
-		System.out.println("user:" + user);
 		if (user == null) {
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 		}

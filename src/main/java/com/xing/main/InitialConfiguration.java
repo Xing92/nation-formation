@@ -16,8 +16,8 @@ public class InitialConfiguration {
 
 	@PostConstruct
 	public void init() {
-		createYear();
-		System.out.println("XING:year created");
+//		createYear();
+//		System.out.println("XING:year created");
 	}
 
 	private void createYear() {

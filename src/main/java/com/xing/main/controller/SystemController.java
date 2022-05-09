@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +28,21 @@ public class SystemController {
 	@Autowired
 	private YearRepository yearRepository;
 
+	@GetMapping(path = "/year/latest")
+	public ResponseEntity<Year> getLatestYear() {
+		Year year = yearRepository.findLatestYear();
+		return new ResponseEntity<Year>(year, HttpStatus.OK);
+	}
+	
+
+	@GetMapping(path = "/year/create")
+	public ResponseEntity<Year> createOneYear() {
+		Year year = new Year();
+		year.setYearNumer(1);
+		year = yearRepository.save(year);
+		return new ResponseEntity<Year>(year, HttpStatus.OK);
+	}
+
 	@GetMapping(path = "/year/play")
 	public @ResponseBody String playYear() {
 
@@ -42,7 +59,7 @@ public class SystemController {
 	public @ResponseBody String addKingdomToYear(@RequestParam Kingdom kingdom) {
 
 		Year year = getCurrentYear();
-		year.addKingdom(kingdom);
+//		year.addKingdom(kingdom);
 		yearRepository.save(year);
 		return "Kingdom added:" + kingdom.getName() + ", to year:" + year.getYearNumer();
 	}
