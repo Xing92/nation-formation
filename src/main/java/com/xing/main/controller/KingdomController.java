@@ -1,5 +1,6 @@
 package com.xing.main.controller;
 
+import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import com.xing.main.repository.KingdomDetailsRepository;
 import com.xing.main.repository.KingdomRepository;
 import com.xing.main.repository.UserRepository;
 import com.xing.main.repository.YearRepository;
+import com.xing.main.util.Log;
 
 @Controller
 @RequestMapping(path = "/api/kingdom")
@@ -34,7 +36,7 @@ public class KingdomController {
 	private KingdomDetailsRepository kingdomDetailsRepository;
 
 	@PostMapping(path = "/create")
-	public ResponseEntity<Kingdom> createNewKingdom(@RequestParam String name) {
+	public ResponseEntity<Kingdom> createNewKingdom() {
 
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		User user = userRepository.findByUsername(userName);
@@ -51,7 +53,7 @@ public class KingdomController {
 		kingdomDetails = kingdomDetailsRepository.save(kingdomDetails);
 
 		Kingdom kingdom = new Kingdom();
-		kingdom.setName(name);
+		kingdom.setName(userName);
 		kingdom.setMaxTurns(10);
 		kingdom.setKingdomDetails(kingdomDetails);
 		kingdom = kingdomRepository.save(kingdom);
@@ -60,23 +62,36 @@ public class KingdomController {
 		return new ResponseEntity<Kingdom>(kingdom, HttpStatus.OK);
 	}
 
-	@GetMapping(path = "/{name}/turn")
-	public @ResponseBody Kingdom playKingdomTurn(@PathVariable String name) {
-		Kingdom kingdom = kingdomRepository.findByName(name);
-//		int currentTurn = kingdom.getCurrentTurn();
-//		if (currentTurn >= kingdom.getMaxTurns()) {
-//			return kingdom;
-//		}
-//
-//		int gold = kingdom.getGold();
-//		int miners = kingdom.getMiners();
-//		int population = kingdom.getPopulation();
-//		gold += miners * 10 - population;
-//		kingdom.setGold(gold);
-//		kingdom.setCurrentTurn(++currentTurn);
-//		kingdomRepository.save(kingdom);
+	@GetMapping(path = "/me/turn")
+	public ResponseEntity<Kingdom> playKingdomTurn() {
 
-		return kingdom;
+		Kingdom kingdom = getMeKingdom();
+		KingdomDetails kingdomDetails = kingdom.getKingdomDetails();
+		if (kingdomDetails.getTurn() >= kingdom.getMaxTurns()) {
+			return new ResponseEntity<Kingdom>(kingdom, HttpStatus.NOT_ACCEPTABLE);
+		}
+
+		int currentTurn = kingdomDetails.getTurn();
+		int gold = kingdomDetails.getGold();
+		int miners = kingdomDetails.getMiners();
+		int population = kingdomDetails.getPopulation();
+
+		gold += miners * 10 - population;
+		if (gold < 0) {
+			population += (gold / 10);
+			gold = 0;
+		} else {
+			population += (kingdomDetails.getSize() * 10 - population) / 2;
+		}
+		kingdomDetails.setPopulation(population);
+		kingdomDetails.setGold(gold);
+		kingdomDetails.setTurn(currentTurn + 1);
+		kingdomDetails = kingdomDetailsRepository.save(kingdomDetails);
+		kingdom.setKingdomDetails(kingdomDetails);
+		kingdom = kingdomRepository.save(kingdom);
+		Log.info("Turn played for kingdom:" + kingdom.getName());
+
+		return new ResponseEntity<Kingdom>(kingdom, HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/{name}")
@@ -87,12 +102,7 @@ public class KingdomController {
 
 	@GetMapping(path = "/me")
 	public ResponseEntity<Kingdom> getKingdomMe() {
-		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-		User user = userRepository.findByUsername(userName);
-		if (user.getKingdom() != null) {
-			return new ResponseEntity<Kingdom>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		Kingdom kingdom = kingdomRepository.findByName(user.getUsername());
+		Kingdom kingdom = getMeKingdom();
 		return new ResponseEntity<Kingdom>(kingdom, HttpStatus.OK);
 	}
 
@@ -119,4 +129,9 @@ public class KingdomController {
 		return kingdomRepository.findAll();
 	}
 
+	private Kingdom getMeKingdom() {
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userRepository.findByUsername(userName);
+		return user.getKingdom();
+	}
 }
