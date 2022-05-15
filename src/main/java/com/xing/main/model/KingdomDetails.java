@@ -16,7 +16,6 @@ public class KingdomDetails {
 	private Year year;
 
 	private int population;
-	private int populationUnassigned;
 	private int size;
 	private int gold;
 	private int miners;
@@ -81,14 +80,6 @@ public class KingdomDetails {
 
 	public Integer getId() {
 		return id;
-	}
-
-	public int getPopulationUnassigned() {
-		return populationUnassigned;
-	}
-
-	public void setPopulationUnassigned(int populationUnassigned) {
-		this.populationUnassigned = populationUnassigned;
 	}
 
 }

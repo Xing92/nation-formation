@@ -20,7 +20,7 @@ public class ActionYear {
 
 	@ManyToOne
 	private Kingdom kingdomDestination;
-
+	
 	public Year getYear() {
 		return year;
 	}

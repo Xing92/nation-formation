@@ -1,6 +1,8 @@
 package com.xing.main.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +14,7 @@ public class ActionTurn {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@ManyToOne
+	@Enumerated(EnumType.STRING)
 	private ActionType actionType;
 
 	@ManyToOne

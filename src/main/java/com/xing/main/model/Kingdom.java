@@ -1,5 +1,6 @@
 package com.xing.main.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ public class Kingdom {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private KingdomDetails kingdomDetails;
 
 	@Column(unique = true)

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xing.main.model.Kingdom;
+import com.xing.main.model.KingdomDetails;
 import com.xing.main.model.Year;
 import com.xing.main.repository.KingdomRepository;
 import com.xing.main.repository.YearRepository;
@@ -33,9 +34,8 @@ public class SystemController {
 		Year year = yearRepository.findLatestYear();
 		return new ResponseEntity<Year>(year, HttpStatus.OK);
 	}
-	
 
-	@GetMapping(path = "/year/create")
+	@GetMapping(path = "/year/createfirst")
 	public ResponseEntity<Year> createOneYear() {
 		Year year = new Year();
 		year.setYearNumer(1);
@@ -47,43 +47,35 @@ public class SystemController {
 	public @ResponseBody String playYear() {
 
 		Year currentYear = getCurrentYear();
-		List<Kingdom> kingdoms = getAllKingdoms();
-		computeAllKingdoms(kingdoms);
-		Year year = computeYear(currentYear);
 		Year nextYear = createNextYear(currentYear);
+		List<Kingdom> kingdoms = kingdomRepository.findAll();
+		computeAllKingdoms(kingdoms, nextYear);
+		Year year = computeYear(currentYear);
 
 		return "Played year number:" + year.getYearNumer();
 	}
 
-	@PostMapping(path = "/year/addKingdom")
-	public @ResponseBody String addKingdomToYear(@RequestParam Kingdom kingdom) {
-
-		Year year = getCurrentYear();
-//		year.addKingdom(kingdom);
-		yearRepository.save(year);
-		return "Kingdom added:" + kingdom.getName() + ", to year:" + year.getYearNumer();
-	}
-
 	private Year createNextYear(Year currentYear) {
-		Year newYear = new Year();
-		newYear.setYearNumer(currentYear.getYearNumer() + 1);
-		yearRepository.save(newYear);
-		return newYear;
+		Year nextYear = new Year();
+		nextYear.setYearNumer(currentYear.getYearNumer() + 1);
+		yearRepository.save(nextYear);
+		return nextYear;
 	}
 
 	private Year computeYear(Year currentYear) {
-		// TODO Auto-generated method stub
+		// TODO: Compute attacks
+		// TODO: Add attacks
 		return null;
 	}
 
-	private void computeAllKingdoms(List<Kingdom> kingdoms) {
-		// TODO Auto-generated method stub
-	}
-
-	private List<Kingdom> getAllKingdoms() {
-		Iterable<Kingdom> kingdoms = kingdomRepository.findAll();
-		List<Kingdom> kingdomList = StreamSupport.stream(kingdoms.spliterator(), false).collect(Collectors.toList());
-		return kingdomList;
+	private void computeAllKingdoms(List<Kingdom> kingdoms, Year nextYear) {
+		for (Kingdom kingdom : kingdoms) {
+			KingdomDetails kingdomDetails = kingdom.getKingdomDetails();
+			kingdomDetails.setYear(nextYear);
+			kingdomDetails.setTurn(1);
+		}
+		
+		kingdomRepository.saveAll(kingdoms);
 	}
 
 	private Year getCurrentYear() {
